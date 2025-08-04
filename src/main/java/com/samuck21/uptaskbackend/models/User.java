@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+
 @Data
 @Entity
 @Table(name ="users")
@@ -30,6 +33,10 @@ public class User {
     private LocalDateTime createAt = LocalDateTime.now();
     @Column(name="update_at",nullable = false)
     private LocalDateTime updateAt = LocalDateTime.now();
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
+    private Set<UserHasRoles> roles = new HashSet<>();
+
     public User(){
 
     }

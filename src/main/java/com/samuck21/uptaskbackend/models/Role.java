@@ -2,10 +2,13 @@ package com.samuck21.uptaskbackend.models;
 
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
-
+@Data
 @Entity
 @Table(name = "roles")
 public class Role {
@@ -22,6 +25,11 @@ public class Role {
     private LocalDateTime createAt = LocalDateTime.now();
     @Column(name="update_at",nullable = false)
     private LocalDateTime updateAt = LocalDateTime.now();
+
+    @OneToMany(mappedBy = "role",cascade = CascadeType.ALL,orphanRemoval = true)
+    private Set<UserHasRoles> users = new HashSet<>();
+
+
     public Role(){
 
     }
