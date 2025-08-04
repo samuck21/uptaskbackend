@@ -35,7 +35,7 @@ public class User {
     private LocalDateTime updateAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
-    private Set<UserHasRoles> roles = new HashSet<>();
+    private Set<UserHasRoles> usersHasRoles  = new HashSet<>();
 
     public User(){
 

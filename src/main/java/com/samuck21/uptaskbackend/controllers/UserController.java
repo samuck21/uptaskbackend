@@ -1,6 +1,7 @@
 package com.samuck21.uptaskbackend.controllers;
 
 import com.samuck21.uptaskbackend.dto.user.CreateUserRequest;
+import com.samuck21.uptaskbackend.dto.user.CreateUserResponse;
 import com.samuck21.uptaskbackend.models.User;
 import com.samuck21.uptaskbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +18,8 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    public ResponseEntity<User> create(@RequestBody CreateUserRequest request) {
-        User user = userService.create(request);
+    public ResponseEntity<CreateUserResponse> create(@RequestBody CreateUserRequest request) {
+        CreateUserResponse user = userService.create(request);
         return ResponseEntity.ok(user);
 
     }
