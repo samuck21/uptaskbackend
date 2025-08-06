@@ -2,6 +2,8 @@ package com.samuck21.uptaskbackend.controllers;
 
 import com.samuck21.uptaskbackend.dto.user.CreateUserRequest;
 import com.samuck21.uptaskbackend.dto.user.CreateUserResponse;
+import com.samuck21.uptaskbackend.dto.user.LoginRequest;
+import com.samuck21.uptaskbackend.dto.user.LoginResponse;
 import com.samuck21.uptaskbackend.models.User;
 import com.samuck21.uptaskbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,4 +39,24 @@ public class AuthController {
 
 
     }
+
+    @PostMapping(value = "/login")
+    public ResponseEntity<?> create(@RequestBody LoginRequest request) {
+
+        try {
+            LoginResponse response = userService.login(request);
+            return ResponseEntity.ok(response);
+        }catch (RuntimeException e){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                    Map.of("message", e.getMessage(),
+                            "statusCode",HttpStatus.UNAUTHORIZED.value()
+
+                    )
+            );
+        }
+
+
+    }
+
+
 }

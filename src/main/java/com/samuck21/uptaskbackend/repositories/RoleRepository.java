@@ -7,7 +7,6 @@ import java.util.List;
 
 public interface RoleRepository extends JpaRepository<Role,String> {
     boolean existsByName(String name);
-
     List<Role> findAllByUserHasRoles_User_Id(Long idUser);
 
 }

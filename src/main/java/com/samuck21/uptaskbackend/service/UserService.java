@@ -3,12 +3,15 @@ package com.samuck21.uptaskbackend.service;
 import com.samuck21.uptaskbackend.dto.role.RoleDTO;
 import com.samuck21.uptaskbackend.dto.user.CreateUserRequest;
 import com.samuck21.uptaskbackend.dto.user.CreateUserResponse;
+import com.samuck21.uptaskbackend.dto.user.LoginRequest;
+import com.samuck21.uptaskbackend.dto.user.LoginResponse;
 import com.samuck21.uptaskbackend.models.Role;
 import com.samuck21.uptaskbackend.models.User;
 import com.samuck21.uptaskbackend.models.UserHasRoles;
 import com.samuck21.uptaskbackend.repositories.RoleRepository;
 import com.samuck21.uptaskbackend.repositories.UserHasRolesRepository;
 import com.samuck21.uptaskbackend.repositories.UserRepository;
+import com.samuck21.uptaskbackend.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,6 +33,10 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
     @Transactional
     public CreateUserResponse create(CreateUserRequest request){
      if(userRepository.existsByEmail(request.email)){
@@ -65,5 +72,51 @@ public class UserService {
          response.setRoles(roleDTOS);
 
        return  response;
+    }
+    @Transactional
+    public LoginResponse login(LoginRequest request){
+     User user = userRepository.findByEmail(request.getEmail()).orElseThrow(()->new RuntimeException("el Email o Password no son validos"));
+    if(!passwordEncoder.matches(request.getPassword(),user.getPassword())){
+        throw  new RuntimeException("El Email o el Password  es valido");
+    }
+    String token = jwtUtil.genereteToken(user);
+        List<Role> roles = roleRepository.findAllByUserHasRoles_User_Id(user.getId());
+        List<RoleDTO> roleDTOS = roles.stream()
+                .map(role -> new RoleDTO(role.getId(),role.getName(),role.getImage(),role.getRoute()))
+                .toList();
+        CreateUserResponse createUserResponse = new CreateUserResponse();
+        createUserResponse.setId(user.getId());
+        createUserResponse.setName(user.getName());
+        createUserResponse.setLastname(user.getLastname());
+        createUserResponse.setImage(user.getImage());
+        createUserResponse.setPhone(user.getPhone());
+        createUserResponse.setEmail(user.getEmail());
+        createUserResponse.setRoles(roleDTOS);
+        LoginResponse response = new LoginResponse();
+        response.setToken("Bearer "+token);
+        response.setUser(createUserResponse);
+        return  response;
+
+
+    }
+
+    @Transactional
+    public CreateUserResponse findById(Long id){
+        User user = userRepository.findById(id)
+                .orElseThrow(()-> new RuntimeException("El Email o Password no son validos"));
+
+        List<Role> roles = roleRepository.findAllByUserHasRoles_User_Id(user.getId());
+        List<RoleDTO> roleDTOS = roles.stream()
+                .map(role -> new RoleDTO(role.getId(),role.getName(),role.getImage(),role.getRoute()))
+                .toList();
+        CreateUserResponse createUserResponse = new CreateUserResponse();
+        createUserResponse.setId(user.getId());
+        createUserResponse.setName(user.getName());
+        createUserResponse.setLastname(user.getLastname());
+        createUserResponse.setImage(user.getImage());
+        createUserResponse.setPhone(user.getPhone());
+        createUserResponse.setEmail(user.getEmail());
+        createUserResponse.setRoles(roleDTOS);
+        return createUserResponse;
     }
 }
