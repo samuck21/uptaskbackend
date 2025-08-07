@@ -6,6 +6,7 @@ import com.samuck21.uptaskbackend.dto.user.CreateUserResponse;
 import com.samuck21.uptaskbackend.dto.user.LoginRequest;
 import com.samuck21.uptaskbackend.dto.user.LoginResponse;
 import com.samuck21.uptaskbackend.models.Role;
+import com.samuck21.uptaskbackend.models.UpdateUserRequest;
 import com.samuck21.uptaskbackend.models.User;
 import com.samuck21.uptaskbackend.models.UserHasRoles;
 import com.samuck21.uptaskbackend.repositories.RoleRepository;
@@ -17,7 +18,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.concurrent.Phaser;
 
 @Service
 public class UserService {
@@ -119,4 +125,47 @@ public class UserService {
         createUserResponse.setRoles(roleDTOS);
         return createUserResponse;
     }
+    @Transactional
+    public CreateUserResponse updateUserWithImage(Long id, UpdateUserRequest request) throws IOException {
+        User user = userRepository.findById(id)
+                .orElseThrow(()-> new RuntimeException("El Email o Password no son validos"));
+
+        if(request.getName() != null){
+          user.setName(request.getName());
+        }
+
+        if(request.getLastname() != null){
+            user.setLastname(request.getLastname());
+        }
+
+        if(request.getPhone() != null){
+            user.setPhone(request.getPhone());
+        }
+        if(request.getFile() != null && request.getFile().isEmpty() ){
+            String uploadDir = "uploads/users"+ user.getId();
+            String filename = request.getFile().getOriginalFilename();
+            String filePath = Paths.get(uploadDir,filename).toString();
+
+            Files.createDirectories(Paths.get(uploadDir));
+            Files.copy(request.getFile().getInputStream(),Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
+            user.setImage("/"+filename.replace("\\","/"));
+
+        }
+        userRepository.save(user);
+        List<Role> roles = roleRepository.findAllByUserHasRoles_User_Id(user.getId());
+        List<RoleDTO> roleDTOS = roles.stream()
+                .map(role -> new RoleDTO(role.getId(),role.getName(),role.getImage(),role.getRoute()))
+                .toList();
+        CreateUserResponse createUserResponse = new CreateUserResponse();
+        createUserResponse.setId(user.getId());
+        createUserResponse.setName(user.getName());
+        createUserResponse.setLastname(user.getLastname());
+        createUserResponse.setImage(user.getImage());
+        createUserResponse.setPhone(user.getPhone());
+        createUserResponse.setEmail(user.getEmail());
+        createUserResponse.setRoles(roleDTOS);
+        return createUserResponse;
+    }
+
+
 }
