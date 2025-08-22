@@ -6,9 +6,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
 @SpringBootApplication
 public class UptaskbackendApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(UptaskbackendApplication.class, args);
 	}
-
 }

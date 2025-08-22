@@ -1,4 +1,4 @@
-package com.samuck21.uptaskbackend.models;
+package com.samuck21.uptaskbackend.dto.user;
 
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
@@ -8,6 +8,4 @@ public class UpdateUserRequest {
     private String lastname;
     private String phone ;
     private MultipartFile  file;
-
-
 }

@@ -6,10 +6,12 @@ import com.samuck21.uptaskbackend.dto.user.CreateUserResponse;
 import com.samuck21.uptaskbackend.dto.user.LoginRequest;
 import com.samuck21.uptaskbackend.dto.user.LoginResponse;
 import com.samuck21.uptaskbackend.models.Role;
-import com.samuck21.uptaskbackend.models.UpdateUserRequest;
+import com.samuck21.uptaskbackend.dto.user.UpdateUserRequest;
+import com.samuck21.uptaskbackend.models.Task;
 import com.samuck21.uptaskbackend.models.User;
 import com.samuck21.uptaskbackend.models.UserHasRoles;
 import com.samuck21.uptaskbackend.repositories.RoleRepository;
+import com.samuck21.uptaskbackend.repositories.TaskRepository;
 import com.samuck21.uptaskbackend.repositories.UserHasRolesRepository;
 import com.samuck21.uptaskbackend.repositories.UserRepository;
 import com.samuck21.uptaskbackend.utils.JwtUtil;
@@ -23,7 +25,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
-import java.util.concurrent.Phaser;
 
 @Service
 public class UserService {
@@ -166,6 +167,9 @@ public class UserService {
         createUserResponse.setRoles(roleDTOS);
         return createUserResponse;
     }
+
+
+
 
 
 }

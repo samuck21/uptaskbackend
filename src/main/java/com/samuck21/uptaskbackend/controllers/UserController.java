@@ -2,10 +2,7 @@ package com.samuck21.uptaskbackend.controllers;
 
 import com.samuck21.uptaskbackend.dto.user.CreateUserRequest;
 import com.samuck21.uptaskbackend.dto.user.CreateUserResponse;
-import com.samuck21.uptaskbackend.dto.user.LoginRequest;
-import com.samuck21.uptaskbackend.dto.user.LoginResponse;
-import com.samuck21.uptaskbackend.models.UpdateUserRequest;
-import com.samuck21.uptaskbackend.models.User;
+import com.samuck21.uptaskbackend.dto.user.UpdateUserRequest;
 import com.samuck21.uptaskbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,8 +38,6 @@ public class UserController {
                     )
             );
         }
-
-
     }
 
     @PutMapping(value = "/upload/{id}")
